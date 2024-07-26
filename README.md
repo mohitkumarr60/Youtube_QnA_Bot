@@ -31,6 +31,8 @@
 
    `GEMINI_API_KEY=your_gemini_api_key`
 
+   `YOUTUBE_API_KEY= your_youtube_api_key`
+
 # <h2> Usage</h2>  #
 
 <h3> Running the Application </h3>
