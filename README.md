@@ -17,13 +17,12 @@
 
 1. Clone the Repository:
 
-   `git clone `
+   `git clone https://github.com/mohitkumarr60/qnabot/blob/main/youtube.py `
    
-   `cd `
+   `cd youtube.py`
 
 3. Install the necessary dependencies:
 
-   `pip install youtube_transcript_api`
 
 4. Set up environment variables:
 
