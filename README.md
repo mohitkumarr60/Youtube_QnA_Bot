@@ -17,7 +17,7 @@
 
 1. Clone the Repository:
 
-   `git clone https://github.com/mohitkumarr60/qnabot/blob/main/youtube.py `
+   `git clone https://github.com/mohitkumarr60/qnabot `
    
    `cd youtube.py`
 
