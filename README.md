@@ -19,7 +19,7 @@
 
    `git clone https://github.com/mohitkumarr60/qnabot `
    
-   `cd youtube.py`
+   `cd qnabot`
 
 3. Install the necessary dependencies:
 
