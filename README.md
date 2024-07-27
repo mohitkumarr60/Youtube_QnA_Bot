@@ -17,7 +17,7 @@
 
 # <h3> Technologies used 🛠️ </h3>
 
-![image](https://github.com/user-attachments/assets/7093f439-36c1-4b6b-b2a0-84241b271e6a)
+![image](https://github.com/mohitkumarr60/qnabot/blob/main/utils/technology%20used.jpeg)
 
 
 # <h2> Installation ⚙️ </h2> 
