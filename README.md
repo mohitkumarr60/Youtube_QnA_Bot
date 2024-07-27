@@ -1,9 +1,13 @@
-# <h1>YouTube Playlist Q&A Bot </h1> #
+# <h1>YouTube Playlist Q&A Bot 🤖 </h1> #
+
+![image](https://github.com/user-attachments/assets/d3df7a5a-2d84-4cc9-8a1c-25ab3f2ed7df)
+
 
 
 <h3> This project enables users to generate transcripts for videos in a YouTube playlist, create embeddings, and ask questions about the video content using a Gradio interface. </h3> 
 
-# <h2>Features</h2> #
+# <h2>Features</h2> 
+
 
 1. Extracts video links from a YouTube playlist.
 2. Generates transcripts for each video.
@@ -11,7 +15,12 @@
 4. Provides a Q&A bot to answer questions about the video content.
 5. Interactive web interface using Gradio.
 
-# <h2> Installation # </h2> 
+# <h3> Technologies used 🛠️ </h3>
+
+![image](https://github.com/user-attachments/assets/7093f439-36c1-4b6b-b2a0-84241b271e6a)
+
+
+# <h2> Installation ⚙️ </h2> 
 
 <h3> To get started with this project, follow these steps: </h3>
 
@@ -23,6 +32,7 @@
 
 3. Install the necessary dependencies:
 
+    `pip install -r requirements.txt`
 
 4. Set up environment variables:
 
@@ -32,19 +42,22 @@
 
    `YOUTUBE_API_KEY= your_youtube_api_key`
 
-# <h2> Usage</h2>  #
+# <h2> Usage</h2>  
 
 <h3> Running the Application </h3>
 
 1. Run the Gradio Interface:
 
-   `python app.py`
+   `python youtube.py`
 
    
-2. Interact with the Web Interface:
+2. Interact with bot:
 
    * Open the link provided by Gradio in your web browser.
    * Enter a YouTube playlist URL and click "Process Playlist" to generate transcripts and embeddings.
-   * Ask questions about the video content in the playlist and get answers.
+   * Ask questions about the video content in the playlist either in voice or text form.
+   * It will give you answer by finding from transcript.
 
+# <h2>Feedback/Query Form </h2>
 
+Your Experience Matters: Share Your Feedback and Queries: [Feedback Form](https://forms.gle/1RyBvZzQpokZpGFc9)
