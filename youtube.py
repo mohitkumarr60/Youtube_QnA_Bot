@@ -1,70 +1,98 @@
-# Import necessary classes from different modules
+import gradio as gr
 from Links_Generator import YouTubePlaylist
 from Transcript_Generator import Transcript_Generator
 from generator import Generator
 from retriever import Retriever
-from speech_conversion import SpeakText, TextToSpeech
+import whisper
+import time
 
-# Prompt the user to enter the YouTube playlist URL
-url = str(input("Enter the YouTube playlist URL: "))
+whisper_model = whisper.load_model("base")
 
-# Initialize the YouTubePlaylist object with the provided URL
-yt_playlist = YouTubePlaylist(url)
+# Function to process YouTube playlist and generate transcripts
+def process_playlist(url):
+    yt_playlist = YouTubePlaylist(url)
+    links = yt_playlist.get_playlist_items()
 
-# Get the list of video links from the playlist
-links = yt_playlist.get_playlist_items()
-
-# Initialize a counter for video numbering
-i = 1
-
-# Loop through each video link in the playlist
-for link in links:
-    # Initialize the Transcript_Generator object with the video link
-    init_transcript = Transcript_Generator(link)
+    transcripts = []
+    num_videos = len(links)
     
-    # Generate the transcript for the current video
-    transcript = init_transcript.generate_Transcript()
+    # Create a progress tracker instance
+    progress_tracker = gr.Progress(num_videos)
     
-    # Prepare the input string for the current video with its transcript
-    inp = f"Video {i}:\n {transcript}"
-    
-    # Print the input string (video number and its transcript)
-    print(inp)
-    
-    # Initialize the Generator object with the transcript
-    generator = Generator(transcript)
-    
-    # Generate embeddings for the transcript
-    embeddings = generator.generate_embeddings()
-    
-    # Increment the video counter
-    i += 1
+    for i, link in enumerate(links, start=1):
+        init_transcript = Transcript_Generator(link)
+        transcript = init_transcript.generate_Transcript()
+        transcripts.append(f"Video {i}:\n {transcript}")
 
-# Initialize the Retriever object
-init_retriever = Retriever()
+        generator = Generator(transcript)
+        generator.generate_embeddings()
 
-# Continuously prompt the user for questions until they type 'exit'
-while True:
-    # Prompt the user to ask a question
-    source = str(input("""Select the source of input: 
-        1. Voice
-        2. Text"""))
+        # Update progress
+        progress_tracker.update(i)
+        time.sleep(1)
 
-    if source == "1":
-        question = TextToSpeech()  # Get the question from voice input
-    elif source == "2":
-        question = str(input("Enter your question('write 'exit' to terminate'): "))
-    else:
-        print("Invalid input. Please try again.")
-        continue
+    return "Processing Completed."
 
-    # Check if the user wants to exit
+# Function to generate answers from text input
+def generate_text_answer(question):
     if question.lower() == "exit":
-        break
-    
-    # Generate an answer for the user's question
+        return "Session terminated."
+
+    init_retriever = Retriever()
     answer = init_retriever.generate_answers(question)
-    
-    # Print the answer
-    print(answer)
-    SpeakText(answer)
+    return answer
+
+# Function to generate answers from voice input
+def generate_voice_answer(audio):
+    # Load the audio file
+    audio_file = whisper.load_audio(audio)
+    result = whisper_model.transcribe(audio_file, verbose=True)
+    question = result["text"]
+
+    if question.lower() == "exit":
+        return "Session terminated."
+
+    init_retriever = Retriever()
+    answer = init_retriever.generate_answers(question.lower())
+    return answer
+
+# Gradio interface
+def gradio_interface():
+    with gr.Blocks(theme=gr.themes.Default(primary_hue=gr.themes.colors.red, secondary_hue=gr.themes.colors.pink)) as demo:
+        with gr.Row():
+            gr.Image(value="./utils/logo.jpeg", label="YouTube QnA Bot", type="filepath", scale=1)
+            gr.Label("YouTube QnA Bot", scale=4)
+
+        with gr.Row():
+            url_input = gr.Textbox(label="Enter YouTube playlist URL", placeholder="YouTube playlist URL")
+            process_button = gr.Button("Process Playlist", variant="primary")
+        
+        # Add a progress bar and status output
+        progress_tracker = gr.Progress()
+        status_output = gr.Textbox(label="Status", placeholder="Processing status will appear here", lines=2)
+
+        # Define the function that updates the progress
+        def update_progress(url):
+            status = process_playlist(url)
+            return status
+
+        process_button.click(fn=update_progress, inputs=url_input, outputs=status_output)
+
+        with gr.Row():
+            answer_output = gr.Textbox(label="Answer", placeholder="Answer will appear here", lines=5)
+      
+        with gr.Row():
+            audio_input = gr.Audio(sources="microphone", type="filepath", scale=4)
+            ask_voice_button = gr.Button("Ask (Voice)", scale=1, variant="primary")
+
+        with gr.Row():
+            question_text_input = gr.Textbox(label="Enter your question", placeholder="Ask your question here", scale=4)
+            ask_text_button = gr.Button("Ask (Text)", scale=1, variant="primary")
+        
+        ask_text_button.click(generate_text_answer, inputs=question_text_input, outputs=answer_output)
+        ask_voice_button.click(generate_voice_answer, inputs=audio_input, outputs=answer_output)
+
+    return demo
+
+# Launch the Gradio interface
+gradio_interface().launch(share=True)
